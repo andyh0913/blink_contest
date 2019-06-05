@@ -3,6 +3,7 @@
 import os
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
+from flask_sslify import SSLify
 from PIL import Image
 import base64
 import io
@@ -11,8 +12,16 @@ import numpy as np
 from detect import Eye_Detector
 from OpenSSL import SSL
 
+#import eventlet
+#eventlet.monkey_patch()
+
+# context = SSL.Context(SSL.SSLv23_METHOD)
+# context.use_privatekey_file('./server.key')
+# context.use_certificate_file('./server.crt')
+
 app = Flask(__name__)
 socketio = SocketIO(app)
+SSLify(app)
 id_list = []
 detector = Eye_Detector()
 # context = SSL.Context(SSL.SSLv23_METHOD)
@@ -77,4 +86,6 @@ def index():
 if __name__ == "__main__":
     # context = ('host.cert', 'host.key')
     # # app.run(host='0.0.0.0', port=3000, ssl_context = context)
-    socketio.run(app, host='0.0.0.0', port=4000)# , keyfile='key.pem', certfile='cert.pem')
+    #socketio.run(app, host='0.0.0.0', port=5001 )# , keyfile='key.pem', certfile='cert.pem')    
+    socketio.run(app, host='0.0.0.0', port=5001, keyfile='server.key', certfile='server.crt')
+
